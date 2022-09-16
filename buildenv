@@ -12,8 +12,9 @@ export ZSTD_NO_ASM=1
 
 export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}" 
 
+export ZOPEN_NAME="zstd-1.5.2"
 rm -f v1.5.2
-ln -s zstd-1.5.2 v1.5.2
+ln -s ${ZOPEN_NAME} v1.5.2
 
 zopen_check_results()
 {
