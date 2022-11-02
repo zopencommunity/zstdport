@@ -46,3 +46,45 @@ index f77e1b7..385f4a1 100644
  
  HAVE_COLORNEVER = $(shell echo a | egrep --color=never a > /dev/null 2> /dev/null && echo 1 || echo 0)
  EGREP_OPTIONS ?=
+diff --git a/tests/Makefile b/tests/Makefile
+index 132fa7a..b55678c 100644
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -1,4 +1,3 @@
+-
+  # ################################################################
+ # Copyright (c) Yann Collet, Facebook, Inc.
+ # All rights reserved.
+@@ -58,15 +57,20 @@ ZSTDMT_OBJ3 := $(subst $(ZSTDDIR)/decompress/,zstdmt_d_,$(ZSTDMT_OBJ2))
+ ZSTDMT_OBJ4 := $(ZSTDMT_OBJ3:.c=.o)
+ ZSTDMT_OBJECTS := $(ZSTDMT_OBJ4:.S=.o)
+ 
++UNAME := $(shell uname)
+ # Define *.exe as extension for Windows systems
+ ifneq (,$(filter Windows%,$(OS)))
+ EXT =.exe
+ MULTITHREAD_CPP = -DZSTD_MULTITHREAD
+-MULTITHREAD_LD  =
++ifneq (,$(filter $(UNAME), OS/390))
++MULTITHREAD_LD  = -pthread
++else
++MULTITHREAD_LD  = 
++endif
+ else
+ EXT =
+ MULTITHREAD_CPP = -DZSTD_MULTITHREAD
+-MULTITHREAD_LD  = -pthread
++MULTITHREAD_LD  = 
+ endif
+ MULTITHREAD = $(MULTITHREAD_CPP) $(MULTITHREAD_LD)
+ 
+@@ -247,8 +251,7 @@ clean:
+ #----------------------------------------------------------------------------------
+ # valgrind tests are validated only for some posix platforms
+ #----------------------------------------------------------------------------------
+-UNAME := $(shell uname)
+-ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS AIX))
++ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS AIX OS/390))
+ HOST_OS = POSIX
+ 
+ valgrindTest: VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1
