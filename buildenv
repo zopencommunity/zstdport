@@ -11,6 +11,14 @@ export ZSTD_NO_ASM=1
 export ZOPEN_CHECK_OPTS="-i check"
 export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}" 
 
+#
+# Starter for Python
+#
+if ! type python3 >/dev/null ; then
+  echo "need python3 set up for test of zstd" >&2
+  return 4
+fi
+
 export ZOPEN_NAME="zstd-1.5.2"
 rm -f v1.5.2
 ln -s ${ZOPEN_NAME} v1.5.2
