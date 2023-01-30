@@ -9,7 +9,6 @@ export ZOPEN_CONFIGURE=skip
 export ZSTD_NO_ASM=1
 
 #export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}" 
-export ZOPEN_INSTALL_OPTS="install prefix=\${ZOPEN_INSTALL_DIR}" 
 
 #
 # Starter for Python
