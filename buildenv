@@ -3,10 +3,11 @@
 #
 export ZOPEN_TYPE="TARBALL"
 export ZOPEN_TARBALL_URL="https://github.com/facebook/zstd/archive/refs/tags/v1.5.2.tar.gz"
-export ZOPEN_TARBALL_DEPS="curl gzip make coreutils zoslib"
+export ZOPEN_TARBALL_DEPS="curl gzip make coreutils zoslib python"
 export ZOPEN_BOOTSTRAP=skip
 export ZOPEN_CONFIGURE=skip
 export ZSTD_NO_ASM=1
+export ZOPEN_COMP=CLANG
 
 export ZOPEN_CHECK_OPTS="-i check"
 export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}" 
