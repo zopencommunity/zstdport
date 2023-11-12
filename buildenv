@@ -1,5 +1,5 @@
 # bump: zstd-version /ZSTD_VERSION=(.*)/ https://github.com/facebook/zstd.git|*
-ZSTD_VERSION=1.5.2
+ZSTD_VERSION=1.5.5
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_STABLE_URL="https://github.com/facebook/zstd/archive/refs/tags/v${ZSTD_VERSION}.tar.gz"
