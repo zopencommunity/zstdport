@@ -1,8 +1,8 @@
 diff --git a/tests/Makefile b/tests/Makefile
-index 778c7d6..ed99cac 100644
+index 778c7d6..d65014f 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -35,10 +35,11 @@ PYTHON ?= python3
+@@ -35,9 +35,10 @@ PYTHON ?= python3
  TESTARTEFACT := versionsTest
  
  DEBUGFLAGS += -g -Wno-c++-compat
@@ -10,12 +10,33 @@ index 778c7d6..ed99cac 100644
 +CPPFLAGS_EXTRA += -I$(ZSTDDIR) -I$(ZSTDDIR)/common -I$(ZSTDDIR)/compress \
                -I$(ZSTDDIR)/dictBuilder -I$(ZSTDDIR)/deprecated -I$(PRGDIR) \
                -DZSTD_WINDOW_OVERFLOW_CORRECT_FREQUENTLY=1
- 
 +override CPPFLAGS += $(CPPFLAGS_EXTRA)
+ 
  ZSTDCOMMON_FILES := $(sort $(ZSTD_COMMON_FILES))
  ZSTDCOMP_FILES   := $(sort $(ZSTD_COMPRESS_FILES))
- ZSTDDECOMP_FILES := $(sort $(ZSTD_DECOMPRESS_FILES))
-@@ -207,7 +208,7 @@ paramgrill : $(ZSTD_FILES) $(PRGDIR)/util.c $(PRGDIR)/timefn.c $(PRGDIR)/benchfn
+@@ -58,15 +59,20 @@ ZSTDMT_OBJ3 := $(subst $(ZSTDDIR)/decompress/,zstdmt_d_,$(ZSTDMT_OBJ2))
+ ZSTDMT_OBJ4 := $(ZSTDMT_OBJ3:.c=.o)
+ ZSTDMT_OBJECTS := $(ZSTDMT_OBJ4:.S=.o)
+ 
++UNAME := $(shell uname)
+ # Define *.exe as extension for Windows systems
+ ifneq (,$(filter Windows%,$(OS)))
+ EXT =.exe
+ MULTITHREAD_CPP = -DZSTD_MULTITHREAD
++ifneq (,$(filter $(UNAME), OS/390))
++MULTITHREAD_LD  = -pthread
++else
+ MULTITHREAD_LD  =
++#endif
+ else
+ EXT =
+ MULTITHREAD_CPP = -DZSTD_MULTITHREAD
+-MULTITHREAD_LD  = -pthread
++MULTITHREAD_LD  = 
+ endif
+ MULTITHREAD = $(MULTITHREAD_CPP) $(MULTITHREAD_LD)
+ 
+@@ -207,7 +213,7 @@ paramgrill : $(ZSTD_FILES) $(PRGDIR)/util.c $(PRGDIR)/timefn.c $(PRGDIR)/benchfn
  
  CLEAN += datagen
  datagen : $(PRGDIR)/datagen.c datagencli.c
@@ -24,7 +45,7 @@ index 778c7d6..ed99cac 100644
  
  CLEAN += roundTripCrash
  roundTripCrash: CFLAGS += $(MULTITHREAD)
-@@ -263,7 +264,7 @@ clean:
+@@ -263,7 +269,7 @@ clean:
  # valgrind tests validated only for some posix platforms
  #----------------------------------------------------------------------------------
  UNAME := $(shell uname)
@@ -33,7 +54,7 @@ index 778c7d6..ed99cac 100644
  HOST_OS = POSIX
  
  .PHONY: test-valgrind
-@@ -307,6 +308,7 @@ shortest: ZSTDRTTEST=  # remove long tests
+@@ -307,6 +313,7 @@ shortest: ZSTDRTTEST=  # remove long tests
  shortest: test-zstd
  
  .PHONY: check
