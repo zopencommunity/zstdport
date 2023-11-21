@@ -1,5 +1,5 @@
 diff --git a/programs/benchzstd.c b/programs/benchzstd.c
-index fa2659e..32dba6a 100644
+index 9bc3628..bdbf7f3 100644
 --- a/programs/benchzstd.c
 +++ b/programs/benchzstd.c
 @@ -20,13 +20,13 @@
@@ -19,10 +19,10 @@ index fa2659e..32dba6a 100644
  #include "timefn.h"      /* UTIL_time_t */
  #include "benchfn.h"
 diff --git a/programs/dibio.c b/programs/dibio.c
-index d19f954..6f98b12 100644
+index 26ebe5c..7b448b2 100644
 --- a/programs/dibio.c
 +++ b/programs/dibio.c
-@@ -21,14 +21,14 @@
+@@ -21,12 +21,12 @@
  /*-*************************************
  *  Includes
  ***************************************/
@@ -32,15 +32,13 @@ index d19f954..6f98b12 100644
  #include <string.h>         /* memset */
  #include <stdio.h>          /* fprintf, fopen, ftello64 */
  #include <errno.h>          /* errno */
- #include <assert.h>
- 
 +#include "platform.h"       /* Large Files support */
 +#include "util.h"           /* UTIL_getFileSize, UTIL_getTotalFileSize */
+ 
  #include "timefn.h"         /* UTIL_time_t, UTIL_clockSpanMicro, UTIL_getTime */
- #include "../lib/common/mem.h"  /* read */
- #include "dibio.h"
+ #include "../lib/common/debug.h" /* assert */
 diff --git a/programs/fileio.c b/programs/fileio.c
-index 5338fa6..f94fab8 100644
+index 84a0f48..9d1e9b4 100644
 --- a/programs/fileio.c
 +++ b/programs/fileio.c
 @@ -23,8 +23,6 @@
@@ -52,7 +50,7 @@ index 5338fa6..f94fab8 100644
  #include <stdio.h>      /* fprintf, open, fdopen, fread, _fileno, stdin, stdout */
  #include <stdlib.h>     /* malloc, free */
  #include <string.h>     /* strcmp, strlen */
-@@ -33,6 +31,8 @@
+@@ -34,6 +32,8 @@
  #include <errno.h>      /* errno */
  #include <limits.h>     /* INT_MAX */
  #include <signal.h>
@@ -62,7 +60,7 @@ index 5338fa6..f94fab8 100644
  
  #if defined (_MSC_VER)
 diff --git a/programs/util.c b/programs/util.c
-index d69b72a..56bb622 100644
+index c9031e9..29b1547 100644
 --- a/programs/util.c
 +++ b/programs/util.c
 @@ -16,12 +16,12 @@ extern "C" {
@@ -80,23 +78,22 @@ index d69b72a..56bb622 100644
  #if defined(_WIN32)
  #  include <sys/utime.h>  /* utime */
 diff --git a/programs/zstdcli.c b/programs/zstdcli.c
-index bfe18c0..51eece3 100644
+index d246545..70d3cab 100644
 --- a/programs/zstdcli.c
 +++ b/programs/zstdcli.c
-@@ -27,14 +27,14 @@
+@@ -27,13 +27,13 @@
  /*-************************************
  *  Dependencies
  **************************************/
--#include "platform.h" /* IS_CONSOLE, PLATFORM_POSIX_VERSION */
--#include "util.h"     /* UTIL_HAS_CREATEFILELIST, UTIL_createFileList */
+-#include "platform.h" /* PLATFORM_POSIX_VERSION */
+-#include "util.h"     /* UTIL_HAS_CREATEFILELIST, UTIL_createFileList, UTIL_isConsole */
  #include <stdlib.h>   /* getenv */
  #include <string.h>   /* strcmp, strlen */
  #include <stdio.h>    /* fprintf(), stdin, stdout, stderr */
  #include <errno.h>    /* errno */
  #include <assert.h>   /* assert */
++#include "platform.h" /* PLATFORM_POSIX_VERSION */
++#include "util.h"     /* UTIL_HAS_CREATEFILELIST, UTIL_createFileList, UTIL_isConsole */
  
-+#include "platform.h" /* IS_CONSOLE, PLATFORM_POSIX_VERSION */
-+#include "util.h"     /* UTIL_HAS_CREATEFILELIST, UTIL_createFileList */
  #include "fileio.h"   /* stdinmark, stdoutmark, ZSTD_EXTENSION */
  #ifndef ZSTD_NOBENCH
- #  include "benchzstd.h"  /* BMK_benchFiles */
