@@ -1,5 +1,5 @@
-# bump: zstd-version /ZSTD_VERSION=(.*)/ https://github.com/facebook/zstd.git|semver:^1
-ZSTD_VERSION=1.5.2
+# bump: zstd-version /ZSTD_VERSION=(.*)/ https://github.com/facebook/zstd.git|*
+ZSTD_VERSION=1.5.5
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_STABLE_URL="https://github.com/facebook/zstd/archive/refs/tags/v${ZSTD_VERSION}.tar.gz"
@@ -47,5 +47,5 @@ ZZ
 
 zopen_get_version()
 {
-  ./zstd --version | head -1 | awk '{print $7; }' | tr -d ',v'
+  ./zstd --version | head -1 | awk '{print $5; }' | tr -d ',v'
 }
