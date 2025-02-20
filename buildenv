@@ -1,5 +1,5 @@
 # bump: zstd-version /ZSTD_VERSION=(.*)/ https://github.com/facebook/zstd.git|semver:^1
-ZSTD_VERSION=1.5.5
+ZSTD_VERSION=1.5.7
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="compression"
