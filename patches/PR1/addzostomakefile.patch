@@ -1,25 +1,3 @@
-diff --git a/lib/Makefile b/lib/Makefile
-index ef20218..30b0c1b 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -77,6 +77,8 @@ ifeq ($(UNAME), Darwin)
- else
-   ifeq ($(UNAME), AIX)
-     SONAME_FLAGS =
-+  else ifeq ($(UNAME), OS/390)
-+    SONAME_FLAGS =
-   else
-     SONAME_FLAGS = -Wl,-soname=libzstd.$(SHARED_EXT).$(LIBVER_MAJOR)
-   endif
-@@ -249,7 +251,7 @@ clean:
- #-----------------------------------------------------------------------------
- # make install is validated only for below listed environments
- #-----------------------------------------------------------------------------
--ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX))
-+ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX OS/390 ))
- 
- lib: libzstd.pc
- 
 diff --git a/Makefile b/Makefile
 index 9b5451d..6c3f937 100644
 --- a/Makefile
@@ -32,4 +10,35 @@ index 9b5451d..6c3f937 100644
 +ifneq (,$(filter $(shell uname),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD DragonFly NetBSD MSYS_NT Haiku AIX OS/390))
  
  HOST_OS = POSIX
+ 
+diff --git i/lib/Makefile w/lib/Makefile
+index a4cf61a..15636a1 100644
+--- i/lib/Makefile
++++ w/lib/Makefile
+@@ -77,6 +77,8 @@ ifeq ($(UNAME), Darwin)
+ else
+   ifeq ($(UNAME), AIX)
+     SONAME_FLAGS =
++  else ifeq ($(UNAME), OS/390)
++    SONAME_FLAGS =
+   else
+     SONAME_FLAGS = -Wl,-soname=libzstd.$(SHARED_EXT).$(LIBVER_MAJOR)
+   endif
+@@ -160,7 +162,7 @@ $(ZSTD_DYNLIB): $(ZSTD_DYNLIB_OBJ)
+ 	$(if $(filter -DZSTD_MULTITHREAD,$(CPPFLAGS)),\
+     @echo compiling multi-threaded dynamic library $(LIBVER),\
+     @echo compiling single-threaded dynamic library $(LIBVER))
+-	$(CC) $(FLAGS) $^ $(LDFLAGS) $(SONAME_FLAGS) -o $@
++	$(CC) $(FLAGS) $^ $(LDFLAGS) $(SONAME_FLAGS) -o $@ $(LIBS)
+ 	@echo creating versioned links
+ 	ln -sf $@ libzstd.$(SHARED_EXT_MAJOR)
+ 	ln -sf $@ libzstd.$(SHARED_EXT)
+@@ -249,7 +251,7 @@ clean:
+ #-----------------------------------------------------------------------------
+ # make install is validated only for below listed environments
+ #-----------------------------------------------------------------------------
+-ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX))
++ifneq (,$(filter $(UNAME),Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX OS/390 ))
+ 
+ lib: libzstd.pc
  
