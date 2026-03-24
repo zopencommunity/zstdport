@@ -1,6 +1,5 @@
 pax_global_header
-v1.5.2
-zstd-1.5.2/
+zstd*/
 log/
 install
 log.STABLE

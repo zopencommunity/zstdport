@@ -1,25 +1,26 @@
 diff --git a/programs/benchzstd.c b/programs/benchzstd.c
-index 9bc3628..bdbf7f3 100644
+index f9274a5..3ca5908 100644
 --- a/programs/benchzstd.c
 +++ b/programs/benchzstd.c
-@@ -20,13 +20,13 @@
+@@ -18,15 +18,13 @@
  /* *************************************
- *  Includes
- ***************************************/
--#include "platform.h"    /* Large Files support */
--#include "util.h"        /* UTIL_getFileSize, UTIL_sleep */
- #include <stdlib.h>      /* malloc, free */
- #include <string.h>      /* memset, strerror */
- #include <stdio.h>       /* fprintf, fopen */
+  *  Includes
+  ***************************************/
+-/* this must be included first */
+-#include "platform.h" /* Large Files support, compiler specifics */
+-
+ /* then following system includes */
+ #include <assert.h> /* assert */
  #include <errno.h>
- #include <assert.h>      /* assert */
-+#include "platform.h"    /* Large Files support */
-+#include "util.h"        /* UTIL_getFileSize, UTIL_sleep */
- 
- #include "timefn.h"      /* UTIL_time_t */
+ #include <stdio.h>    /* fprintf, fopen */
+ #include <stdlib.h>   /* malloc, free */
+ #include <string.h>   /* memset, strerror */
++#include "platform.h" /* Large Files support, compiler specifics */
+ #include "util.h"     /* UTIL_getFileSize, UTIL_sleep */
+ #include "../lib/common/mem.h"
  #include "benchfn.h"
 diff --git a/programs/dibio.c b/programs/dibio.c
-index 26ebe5c..7b448b2 100644
+index 7ba22d1..66abdd0 100644
 --- a/programs/dibio.c
 +++ b/programs/dibio.c
 @@ -21,12 +21,12 @@
@@ -38,7 +39,7 @@ index 26ebe5c..7b448b2 100644
  #include "timefn.h"         /* UTIL_time_t, UTIL_clockSpanMicro, UTIL_getTime */
  #include "../lib/common/debug.h" /* assert */
 diff --git a/programs/fileio.c b/programs/fileio.c
-index 84a0f48..9d1e9b4 100644
+index 0ecca40..3c85983 100644
 --- a/programs/fileio.c
 +++ b/programs/fileio.c
 @@ -23,8 +23,6 @@
@@ -60,10 +61,10 @@ index 84a0f48..9d1e9b4 100644
  
  #if defined (_MSC_VER)
 diff --git a/programs/util.c b/programs/util.c
-index c9031e9..29b1547 100644
+index 065a358..21d8e67 100644
 --- a/programs/util.c
 +++ b/programs/util.c
-@@ -16,12 +16,12 @@ extern "C" {
+@@ -11,12 +11,12 @@
  /*-****************************************
  *  Dependencies
  ******************************************/
@@ -75,13 +76,13 @@ index c9031e9..29b1547 100644
  #include <assert.h>
 +#include "util.h"       /* note : ensure that platform.h is included first ! */
  
- #if defined(_WIN32)
- #  include <sys/utime.h>  /* utime */
+ #if defined(__FreeBSD__)
+ #include <sys/param.h> /* __FreeBSD_version */
 diff --git a/programs/zstdcli.c b/programs/zstdcli.c
-index d246545..70d3cab 100644
+index 83d9b88..6b7012f 100644
 --- a/programs/zstdcli.c
 +++ b/programs/zstdcli.c
-@@ -27,13 +27,13 @@
+@@ -11,12 +11,12 @@
  /*-************************************
  *  Dependencies
  **************************************/
@@ -90,7 +91,6 @@ index d246545..70d3cab 100644
  #include <stdlib.h>   /* getenv */
  #include <string.h>   /* strcmp, strlen */
  #include <stdio.h>    /* fprintf(), stdin, stdout, stderr */
- #include <errno.h>    /* errno */
  #include <assert.h>   /* assert */
 +#include "platform.h" /* PLATFORM_POSIX_VERSION */
 +#include "util.h"     /* UTIL_HAS_CREATEFILELIST, UTIL_createFileList, UTIL_isConsole */
