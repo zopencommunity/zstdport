@@ -1,0 +1,13 @@
+diff --git a/tests/Makefile b/tests/Makefile
+index 406c7f2..ef9405b 100644
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -273,7 +273,7 @@ clean:
+ # valgrind tests validated only for some posix platforms
+ #----------------------------------------------------------------------------------
+ UNAME := $(shell sh -c 'MSYSTEM="MSYS" uname')
+-ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS AIX CYGWIN_NT%,$(UNAME)))
++ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS AIX CYGWIN_NT% OS/390,$(UNAME)))
+ HOST_OS = POSIX
+ 
+ .PHONY: test-valgrind

@@ -3,18 +3,17 @@ ZSTD_VERSION=1.5.7
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="compression"
-export ZOPEN_STABLE_URL="https://github.com/facebook/zstd.git"
-export ZOPEN_STABLE_TAG="v${ZSTD_VERSION}"
+export ZOPEN_STABLE_URL="https://github.com/facebook/zstd/archive/refs/tags/v${ZSTD_VERSION}.tar.gz"
 export ZOPEN_STABLE_DEPS="make coreutils check_python diffutils which"
 export ZOPEN_BOOTSTRAP=skip
 export ZOPEN_CONFIGURE=skip
 export ZSTD_NO_ASM=1
-export ZOPEN_COMP=CLANG
-export ZOPEN_MAKE_OPTS="prefix=\${ZOPEN_INSTALL_DIR} LDLIBS=\"-lzoslib -lstdc++\""
+export ZOPEN_MAKE_OPTS="prefix=\${ZOPEN_INSTALL_DIR}"
 export ZOPEN_CHECK_OPTS="-i check"
-export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}" 
+export ZOPEN_INSTALL_OPTS="install POSIX_ENV=Yes prefix=\${ZOPEN_INSTALL_DIR}"
 export ZOPEN_CONFIGURE_MINIMAL="yes"
 export ZOPEN_MAKE_MINIMAL="yes"
+export USE_CLANG_WRAPPER=1
 
 #
 # Starter for Python

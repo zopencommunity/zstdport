@@ -1,0 +1,87 @@
+diff --git a/lib/Makefile b/lib/Makefile
+index a6a0eb0..c3fb5fd 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -83,12 +83,19 @@ ifeq ($(UNAME_TARGET_SYSTEM), Darwin)
+ else
+   ifeq ($(UNAME_TARGET_SYSTEM), AIX)
+     SONAME_FLAGS =
++  else ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++    SONAME_FLAGS =
+   else
+     SONAME_FLAGS = -Wl,-soname=libzstd.$(SHARED_EXT).$(LIBVER_MAJOR)
+   endif
+   SHARED_EXT = so
+-  SHARED_EXT_MAJOR = $(SHARED_EXT).$(LIBVER_MAJOR)
+-  SHARED_EXT_VER = $(SHARED_EXT).$(LIBVER)
++  ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++    SHARED_EXT_MAJOR = $(SHARED_EXT)
++    SHARED_EXT_VER = $(SHARED_EXT)
++  else
++    SHARED_EXT_MAJOR = $(SHARED_EXT).$(LIBVER_MAJOR)
++    SHARED_EXT_VER = $(SHARED_EXT).$(LIBVER)
++  endif
+ endif
+ 
+ 
+@@ -145,6 +152,9 @@ LIBZSTD = libzstd.$(SHARED_EXT_VER)
+ .PHONY: $(LIBZSTD)  # must be run every time
+ $(LIBZSTD): CPPFLAGS += $(CPPFLAGS_DYNLIB)
+ $(LIBZSTD): CFLAGS   += -fPIC -fvisibility=hidden
++ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++$(LIBZSTD): CFLAGS   += -shared
++endif
+ $(LIBZSTD): LDFLAGS  += -shared $(LDFLAGS_DYNLIB)
+ 
+ ifndef BUILD_DIR
+@@ -167,12 +177,17 @@ $(ZSTD_DYNLIB): $(ZSTD_DYNLIB_OBJ)
+     @echo compiling multi-threaded dynamic library $(LIBVER),\
+     @echo compiling single-threaded dynamic library $(LIBVER))
+ 	$(CC) $(FLAGS) $^ $(LDFLAGS) $(SONAME_FLAGS) -o $@
++ifneq ($(UNAME_TARGET_SYSTEM), OS/390)
+ 	@echo creating versioned links
+ 	ln -sf $@ libzstd.$(SHARED_EXT_MAJOR)
+ 	ln -sf $@ libzstd.$(SHARED_EXT)
++endif
+ 
+ $(LIBZSTD): $(ZSTD_DYNLIB)
+ 	cp -f $< $@
++ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++	[ ! -f $(dir $<)libzstd.x ] || cp -f $(dir $<)libzstd.x libzstd.x
++endif
+ 
+ endif  # ifndef BUILD_DIR
+ endif  # if windows
+@@ -247,6 +262,9 @@ $(DEPFILES):
+ ZSTDMT_FILES = zstdmt_compress.c
+ ZSTD_NOMT_FILES = $(filter-out $(ZSTDMT_FILES),$(notdir $(ZSTD_FILES)))
+ libzstd-nomt: CFLAGS += -fPIC -fvisibility=hidden
++ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++libzstd-nomt: CFLAGS += -shared
++endif
+ libzstd-nomt: LDFLAGS += -shared
+ libzstd-nomt: $(ZSTD_NOMT_FILES)
+ 	@echo compiling single-thread dynamic library $(LIBVER)
+@@ -268,7 +286,7 @@ clean:
+ #-----------------------------------------------------------------------------
+ # make install is validated only for below listed environments
+ #-----------------------------------------------------------------------------
+-ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT%,$(UNAME)))
++ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT% OS/390,$(UNAME)))
+ 
+ lib: libzstd.pc
+ 
+@@ -363,8 +381,13 @@ install-shared:
+ 	[ -e $(DESTDIR)$(LIBDIR) ] || $(INSTALL) -d -m 755 $(DESTDIR)$(LIBDIR)/
+ 	@echo Installing shared library
+ 	$(INSTALL_PROGRAM) $(LIBZSTD) $(DESTDIR)$(LIBDIR)
++ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
++	[ ! -f libzstd.x ] || $(INSTALL_DATA) libzstd.x $(DESTDIR)$(LIBDIR)
++endif
++ifneq ($(UNAME_TARGET_SYSTEM), OS/390)
+ 	ln -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT_MAJOR)
+ 	ln -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT)
++endif
+ 
+ .PHONY: install-includes
+ install-includes:
