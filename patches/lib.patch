@@ -1,5 +1,5 @@
 diff --git a/lib/Makefile b/lib/Makefile
-index a6a0eb0..c3fb5fd 100644
+index 569bd60..baefe51 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
 @@ -83,12 +83,19 @@ ifeq ($(UNAME_TARGET_SYSTEM), Darwin)
@@ -37,17 +37,17 @@ index a6a0eb0..c3fb5fd 100644
 @@ -167,12 +177,17 @@ $(ZSTD_DYNLIB): $(ZSTD_DYNLIB_OBJ)
      @echo compiling multi-threaded dynamic library $(LIBVER),\
      @echo compiling single-threaded dynamic library $(LIBVER))
- 	$(CC) $(FLAGS) $^ $(LDFLAGS) $(SONAME_FLAGS) -o $@
+ 	$(CC) $(FLAGS) $^ $(SONAME_FLAGS) -o $@
 +ifneq ($(UNAME_TARGET_SYSTEM), OS/390)
  	@echo creating versioned links
- 	ln -sf $@ libzstd.$(SHARED_EXT_MAJOR)
- 	ln -sf $@ libzstd.$(SHARED_EXT)
+ 	$(LN) -sf $@ libzstd.$(SHARED_EXT_MAJOR)
+ 	$(LN) -sf $@ libzstd.$(SHARED_EXT)
 +endif
  
  $(LIBZSTD): $(ZSTD_DYNLIB)
- 	cp -f $< $@
+ 	$(CP) $< $@
 +ifeq ($(UNAME_TARGET_SYSTEM), OS/390)
-+	[ ! -f $(dir $<)libzstd.x ] || cp -f $(dir $<)libzstd.x libzstd.x
++	[ ! -f $(dir $<)libzstd.x ] || $(CP) $(dir $<)libzstd.x libzstd.x
 +endif
  
  endif  # ifndef BUILD_DIR
@@ -62,15 +62,6 @@ index a6a0eb0..c3fb5fd 100644
  libzstd-nomt: LDFLAGS += -shared
  libzstd-nomt: $(ZSTD_NOMT_FILES)
  	@echo compiling single-thread dynamic library $(LIBVER)
-@@ -268,7 +286,7 @@ clean:
- #-----------------------------------------------------------------------------
- # make install is validated only for below listed environments
- #-----------------------------------------------------------------------------
--ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT%,$(UNAME)))
-+ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT% OS/390,$(UNAME)))
- 
- lib: libzstd.pc
- 
 @@ -363,8 +381,13 @@ install-shared:
  	[ -e $(DESTDIR)$(LIBDIR) ] || $(INSTALL) -d -m 755 $(DESTDIR)$(LIBDIR)/
  	@echo Installing shared library
@@ -79,8 +70,8 @@ index a6a0eb0..c3fb5fd 100644
 +	[ ! -f libzstd.x ] || $(INSTALL_DATA) libzstd.x $(DESTDIR)$(LIBDIR)
 +endif
 +ifneq ($(UNAME_TARGET_SYSTEM), OS/390)
- 	ln -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT_MAJOR)
- 	ln -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT)
+ 	$(LN) -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT_MAJOR)
+ 	$(LN) -sf $(LIBZSTD) $(DESTDIR)$(LIBDIR)/libzstd.$(SHARED_EXT)
 +endif
  
  .PHONY: install-includes
