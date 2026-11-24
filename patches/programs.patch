@@ -1,18 +1,5 @@
-diff --git a/programs/Makefile b/programs/Makefile
-index f4af5e9..be62692 100644
---- a/programs/Makefile
-+++ b/programs/Makefile
-@@ -345,7 +345,7 @@ include $(wildcard $(DEPFILES))
- #-----------------------------------------------------------------------------
- # make install is validated only for Linux, macOS, BSD, Hurd and Solaris targets
- #-----------------------------------------------------------------------------
--ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT%,$(UNAME)))
-+ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT% OS/390,$(UNAME)))
- 
- HAVE_COLORNEVER = $(shell echo a | egrep --color=never a > /dev/null 2> /dev/null && echo 1 || echo 0)
- EGREP_OPTIONS ?=
 diff --git a/programs/benchzstd.c b/programs/benchzstd.c
-index f9274a5..3ca5908 100644
+index 84bf648..324d129 100644
 --- a/programs/benchzstd.c
 +++ b/programs/benchzstd.c
 @@ -18,15 +18,13 @@
@@ -33,7 +20,7 @@ index f9274a5..3ca5908 100644
  #include "../lib/common/mem.h"
  #include "benchfn.h"
 diff --git a/programs/dibio.c b/programs/dibio.c
-index 7ba22d1..66abdd0 100644
+index 245fb80..95f475b 100644
 --- a/programs/dibio.c
 +++ b/programs/dibio.c
 @@ -21,12 +21,12 @@
@@ -48,11 +35,11 @@ index 7ba22d1..66abdd0 100644
  #include <errno.h>          /* errno */
 +#include "platform.h"       /* Large Files support */
 +#include "util.h"           /* UTIL_getFileSize, UTIL_getTotalFileSize */
+ #include <limits.h>         /* INT_MAX */
  
  #include "timefn.h"         /* UTIL_time_t, UTIL_clockSpanMicro, UTIL_getTime */
- #include "../lib/common/debug.h" /* assert */
 diff --git a/programs/fileio.c b/programs/fileio.c
-index 0ecca40..3c85983 100644
+index 766c526..3894d28 100644
 --- a/programs/fileio.c
 +++ b/programs/fileio.c
 @@ -23,8 +23,6 @@
@@ -73,11 +60,25 @@ index 0ecca40..3c85983 100644
  #include "timefn.h"     /* UTIL_getTime, UTIL_clockSpanMicro */
  
  #if defined (_MSC_VER)
+diff --git a/programs/platform.h b/programs/platform.h
+index 9f1c968..e7921e7 100644
+--- a/programs/platform.h
++++ b/programs/platform.h
+@@ -83,7 +83,8 @@
+  */
+ #  elif !defined(_WIN32) \
+      && ( defined(__unix__) || defined(__unix) \
+-       || defined(_QNX_SOURCE) || defined(__midipix__) || defined(__VMS) || defined(__HAIKU__) )
++       || defined(_QNX_SOURCE) || defined(__midipix__) || defined(__VMS) || defined(__HAIKU__) \
++       || defined(__MVS__) ) /* z/OS UNIX System Services is unix-like */
+ 
+ #    if defined(__linux__) || defined(__linux) || defined(__CYGWIN__)
+ #      ifndef _POSIX_C_SOURCE
 diff --git a/programs/util.c b/programs/util.c
-index 065a358..21d8e67 100644
+index cd05a73..dacea19 100644
 --- a/programs/util.c
 +++ b/programs/util.c
-@@ -11,12 +11,12 @@
+@@ -17,13 +17,13 @@
  /*-****************************************
  *  Dependencies
  ******************************************/
@@ -85,14 +86,15 @@ index 065a358..21d8e67 100644
  #include <stdlib.h>     /* malloc, realloc, free */
  #include <stdio.h>      /* fprintf */
  #include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC, nanosleep */
+ #include <fcntl.h>      /* open, O_RDONLY, AT_FDCWD */
  #include <errno.h>
  #include <assert.h>
 +#include "util.h"       /* note : ensure that platform.h is included first ! */
  
- #if defined(__FreeBSD__)
- #include <sys/param.h> /* __FreeBSD_version */
+ #ifndef UTIL_HAVE_OPENAT
+ #  if !defined(_WIN32) && (PLATFORM_POSIX_VERSION >= 200809L) && defined(st_mtime)
 diff --git a/programs/zstdcli.c b/programs/zstdcli.c
-index 83d9b88..6b7012f 100644
+index 13b2934..1cf1cff 100644
 --- a/programs/zstdcli.c
 +++ b/programs/zstdcli.c
 @@ -11,12 +11,12 @@

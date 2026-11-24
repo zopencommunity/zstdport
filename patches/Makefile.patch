@@ -1,13 +1,10 @@
-diff --git a/Makefile b/Makefile
-index e8e6bcf..7221ef4 100644
---- a/Makefile
-+++ b/Makefile
-@@ -147,7 +147,7 @@ clean:
- #------------------------------------------------------------------------------
- # make install is validated only for Linux, macOS, Hurd and some BSD targets
- #------------------------------------------------------------------------------
--ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD DragonFly NetBSD MSYS_NT% CYGWIN_NT% Haiku AIX,$(shell sh -c 'MSYSTEM="MSYS" uname') ))
-+ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD DragonFly NetBSD MSYS_NT% CYGWIN_NT% Haiku AIX OS/390,$(shell sh -c 'MSYSTEM="MSYS" uname') ))
+diff --git a/lib/install_oses.mk b/lib/install_oses.mk
+index c2cdd16..1a3db77 100644
+--- a/lib/install_oses.mk
++++ b/lib/install_oses.mk
+@@ -14,4 +14,4 @@
+ UNAME := $(shell sh -c 'MSYSTEM="MSYS" uname')
  
- HOST_OS = POSIX
- 
+ # List of OSes for which target install is supported
+-INSTALL_OS_LIST ?= Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT%
++INSTALL_OS_LIST ?= Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS Haiku AIX MSYS_NT% CYGWIN_NT% OS/390

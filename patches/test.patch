@@ -1,8 +1,19 @@
 diff --git a/tests/Makefile b/tests/Makefile
-index 406c7f2..ef9405b 100644
+index d12e42f..ee5e44f 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -273,7 +273,7 @@ clean:
+@@ -37,7 +37,9 @@ PYTHON ?= python3
+ TESTARTEFACT := versionsTest
+ 
+ DEBUGFLAGS += -g -Wno-c++-compat
+-CPPFLAGS   += -I$(LIB_SRCDIR) -I$(LIB_SRCDIR)/common -I$(LIB_SRCDIR)/compress -I$(LIB_SRCDIR)/legacy \
++# note: use `override` so the include paths survive a CPPFLAGS injected via the
++# environment / command line (e.g. by the z/OS zopen build, which uses make -e)
++override CPPFLAGS += -I$(LIB_SRCDIR) -I$(LIB_SRCDIR)/common -I$(LIB_SRCDIR)/compress -I$(LIB_SRCDIR)/legacy \
+               -I$(LIB_SRCDIR)/dictBuilder -I$(LIB_SRCDIR)/deprecated -I$(PRGDIR) \
+               -DZSTD_WINDOW_OVERFLOW_CORRECT_FREQUENTLY=1
+ 
+@@ -283,7 +285,7 @@ clean:
  # valgrind tests validated only for some posix platforms
  #----------------------------------------------------------------------------------
  UNAME := $(shell sh -c 'MSYSTEM="MSYS" uname')
